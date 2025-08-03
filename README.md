@@ -1,4 +1,4 @@
-# Django Profile Project
+# sportstore
 
 A Django web application for user profiles with authentication, profile management, and products listing.
 
