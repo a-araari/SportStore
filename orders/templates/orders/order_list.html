@@ -1,0 +1,154 @@
+<!-- orders/templates/orders/order_list.html -->
+<div id="order-list-template">
+{% extends "base.html" %}
+
+{% block title %}My Orders - SportStore{% endblock %}
+
+{% block content %}
+<div class="orders-container">
+    <h1>My Orders</h1>
+    
+    {% if orders %}
+        <div class="orders-list">
+            {% for order in orders %}
+                <div class="order-card">
+                    <div class="order-header">
+                        <div class="order-info">
+                            <h3>Order #{{ order.id }}</h3>
+                            <p class="order-date">{{ order.created_at|date:"M d, Y" }}</p>
+                        </div>
+                        <div class="order-status">
+                            <span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="order-summary">
+                        <p><strong>Total:</strong> ${{ order.total_amount }}</p>
+                        <p><strong>Items:</strong> {{ order.items.count }}</p>
+                    </div>
+                    
+                    <div class="order-actions">
+                        <a href="{% url 'orders:order_detail' order.id %}" class="btn btn-secondary">View Details</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-orders">
+            <h2>No orders yet</h2>
+            <p>You haven't placed any orders yet.</p>
+            <a href="{% url 'products:product_list' %}" class="btn">Start Shopping</a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .orders-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .orders-container h1 {
+        text-align: center;
+        color: #2c5aa0;
+        margin-bottom: 2rem;
+    }
+
+    .order-card {
+        background: white;
+        border-radius: 10px;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .order-info h3 {
+        color: #333;
+        margin-bottom: 0.3rem;
+    }
+
+    .order-date {
+        color: #666;
+        margin: 0;
+    }
+
+    .status-badge {
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .status-pending {
+        background: #ffeaa7;
+        color: #d63031;
+    }
+
+    .status-processing {
+        background: #74b9ff;
+        color: #0984e3;
+    }
+
+    .status-shipped {
+        background: #a29bfe;
+        color: #6c5ce7;
+    }
+
+    .status-delivered {
+        background: #00b894;
+        color: #00a085;
+    }
+
+    .status-cancelled {
+        background: #fab1a0;
+        color: #e17055;
+    }
+
+    .order-summary {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .order-summary p {
+        margin: 0;
+        color: #666;
+    }
+
+    .no-orders {
+        text-align: center;
+        padding: 3rem;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .no-orders h2 {
+        color: #666;
+        margin-bottom: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .order-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .order-summary {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+    }
+</style>
+{% endblock %}
+</div>
+

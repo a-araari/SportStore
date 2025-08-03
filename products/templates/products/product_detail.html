@@ -1,0 +1,276 @@
+<!-- products/templates/products/product_detail.html -->
+<div id="product-detail-template">
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} - SportStore{% endblock %}
+
+{% block content %}
+<div class="product-detail">
+    <div class="product-detail-grid">
+        <div class="product-image-large">
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" id="main-image">
+        </div>
+        
+        <div class="product-info-detail">
+            <nav class="breadcrumb">
+                <a href="{% url 'products:product_list' %}">Products</a> &gt;
+                <a href="{% url 'products:product_list_by_category' product.category.slug %}">{{ product.category.name }}</a> &gt;
+                <span>{{ product.name }}</span>
+            </nav>
+            
+            <h1>{{ product.name }}</h1>
+            <p class="price-large">${{ product.price }}</p>
+            <p class="category-tag">{{ product.category.name }}</p>
+            
+            <div class="product-description">
+                <h3>Description</h3>
+                <p>{{ product.description }}</p>
+            </div>
+            
+            <form class="add-to-cart-form" onsubmit="handleAddToCart(event)">
+                {% csrf_token %}
+                {% if product.available_sizes %}
+                    <div class="size-selector">
+                        <label>Size:</label>
+                        <select name="size" required>
+                            <option value="">Select Size</option>
+                            {% for size in product.available_sizes %}
+                                <option value="{{ size }}">{{ size }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% endif %}
+                
+                <div class="quantity-selector">
+                    <label>Quantity:</label>
+                    <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}">
+                </div>
+                
+                <div class="stock-info">
+                    {% if product.stock > 0 %}
+                        <span class="in-stock">✓ In Stock ({{ product.stock }} available)</span>
+                    {% else %}
+                        <span class="out-of-stock">✗ Out of Stock</span>
+                    {% endif %}
+                </div>
+                
+                {% if product.stock > 0 %}
+                    <button type="submit" class="btn btn-add-cart">Add to Cart</button>
+                {% else %}
+                    <button type="button" class="btn btn-disabled" disabled>Out of Stock</button>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+    
+    {% if related_products %}
+        <div class="related-products">
+            <h2>Related Products</h2>
+            <div class="related-grid">
+                {% for related in related_products %}
+                    <div class="related-card">
+                        <img src="{{ related.image.url }}" alt="{{ related.name }}">
+                        <h4>{{ related.name }}</h4>
+                        <p class="price">${{ related.price }}</p>
+                        <a href="{{ related.get_absolute_url }}" class="btn btn-small">View</a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .product-detail {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .breadcrumb {
+        margin-bottom: 1rem;
+        color: #666;
+    }
+
+    .breadcrumb a {
+        color: #2c5aa0;
+        text-decoration: none;
+    }
+
+    .product-detail-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+        margin-bottom: 3rem;
+    }
+
+    .product-image-large img {
+        width: 100%;
+        height: 500px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+    .product-info-detail h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: #333;
+    }
+
+    .price-large {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #2c5aa0;
+        margin-bottom: 1rem;
+    }
+
+    .category-tag {
+        display: inline-block;
+        background: #f0f0f0;
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .product-description {
+        margin-bottom: 2rem;
+        line-height: 1.8;
+    }
+
+    .add-to-cart-form {
+        background: #f9f9f9;
+        padding: 2rem;
+        border-radius: 10px;
+    }
+
+    .size-selector,
+    .quantity-selector {
+        margin-bottom: 1rem;
+    }
+
+    .size-selector label,
+    .quantity-selector label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+    }
+
+    .size-selector select,
+    .quantity-selector input {
+        width: 100%;
+        padding: 0.7rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .stock-info {
+        margin: 1rem 0;
+    }
+
+    .in-stock {
+        color: #27ae60;
+        font-weight: bold;
+    }
+
+    .out-of-stock {
+        color: #e74c3c;
+        font-weight: bold;
+    }
+
+    .btn-add-cart {
+        width: 100%;
+        background: #27ae60;
+        font-size: 1.1rem;
+        padding: 1rem;
+    }
+
+    .btn-add-cart:hover {
+        background: #219a52;
+    }
+
+    .btn-disabled {
+        width: 100%;
+        background: #ccc;
+        cursor: not-allowed;
+    }
+
+    .related-products {
+        margin-top: 3rem;
+    }
+
+    .related-products h2 {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: #2c5aa0;
+    }
+
+    .related-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .related-card {
+        background: white;
+        padding: 1rem;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .related-card img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 5px;
+        margin-bottom: 1rem;
+    }
+
+    .btn-small {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+        .product-detail-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .product-info-detail h1 {
+            font-size: 2rem;
+        }
+
+        .related-grid {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        }
+    }
+</style>
+
+<script>
+    function handleAddToCart(event) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+        const productId = {{ product.id }};
+        
+        fetch(`/cart/add/${productId}/`, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                updateCartCount();
+                showAlert('Product added to cart!', 'success');
+            } else {
+                showAlert(data.message || 'Error adding product to cart', 'error');
+            }
+        })
+        .catch(error => {
+            showAlert('Error adding product to cart', 'error');
+        });
+    }
+</script>
+</div>
+{% endblock %}

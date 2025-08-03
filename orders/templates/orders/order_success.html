@@ -1,0 +1,75 @@
+<!-- orders/templates/orders/order_success.html -->
+<div id="order-success-template">
+{% extends "base.html" %}
+
+{% block title %}Order Confirmation - SportStore{% endblock %}
+
+{% block content %}
+<div class="success-container">
+    <div class="success-message">
+        <div class="success-icon">✓</div>
+        <h1>Order Placed Successfully!</h1>
+        <p>Thank you for your order. We've received your order and will process it soon.</p>
+        
+        <div class="order-details">
+            <h2>Order #{{ order.id }}</h2>
+            <p><strong>Total:</strong> ${{ order.total_amount }}</p>
+            <p><strong>Status:</strong> {{ order.get_status_display }}</p>
+        </div>
+        
+        <div class="success-actions">
+            <a href="{% url 'orders:order_detail' order.id %}" class="btn">View Order Details</a>
+            <a href="{% url 'products:product_list' %}" class="btn btn-secondary">Continue Shopping</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .success-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 60vh;
+    }
+
+    .success-message {
+        background: white;
+        padding: 3rem;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        text-align: center;
+        max-width: 500px;
+    }
+
+    .success-icon {
+        font-size: 4rem;
+        color: #27ae60;
+        margin-bottom: 1rem;
+    }
+
+    .success-message h1 {
+        color: #2c5aa0;
+        margin-bottom: 1rem;
+    }
+
+    .order-details {
+        background: #f9f9f9;
+        padding: 1.5rem;
+        border-radius: 5px;
+        margin: 2rem 0;
+    }
+
+    .order-details h2 {
+        color: #333;
+        margin-bottom: 1rem;
+    }
+
+    .success-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+</style>
+{% endblock %}
+</div>

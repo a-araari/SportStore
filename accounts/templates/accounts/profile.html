@@ -1,0 +1,118 @@
+<!-- accounts/templates/accounts/profile.html -->
+<div id="profile-template">
+{% extends "base.html" %}
+
+{% block title %}My Profile - SportStore{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <h1>My Profile</h1>
+    
+    <div class="profile-grid">
+        <div class="profile-info">
+            <h2>Personal Information</h2>
+            <form method="post" class="profile-form">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" value="{{ user.email }}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="text" id="phone" name="phone" value="{{ profile.phone }}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <textarea id="address" name="address" rows="3">{{ profile.address }}</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" id="city" name="city" value="{{ profile.city }}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="postal_code">Postal Code</label>
+                    <input type="text" id="postal_code" name="postal_code" value="{{ profile.postal_code }}">
+                </div>
+                
+                <button type="submit" class="btn">Update Profile</button>
+            </form>
+        </div>
+        
+        <div class="profile-actions">
+            <h2>Quick Actions</h2>
+            <div class="action-buttons">
+                <a href="{% url 'orders:order_list' %}" class="btn btn-secondary">View Orders</a>
+                <a href="{% url 'cart:cart_detail' %}" class="btn btn-secondary">View Cart</a>
+                <a href="{% url 'accounts:logout' %}" class="btn btn-danger">Logout</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .profile-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .profile-container h1 {
+        text-align: center;
+        color: #2c5aa0;
+        margin-bottom: 2rem;
+    }
+
+    .profile-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 3rem;
+    }
+
+    .profile-info,
+    .profile-actions {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .profile-info h2,
+    .profile-actions h2 {
+        margin-bottom: 1.5rem;
+        color: #333;
+    }
+
+    .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .action-buttons .btn {
+        text-align: center;
+        padding: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .profile-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+</div>
